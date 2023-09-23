@@ -33,3 +33,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vscode/
+
+.env
+.env*.local
+__.eslintrc.cjs
+__.eslintrc.js
