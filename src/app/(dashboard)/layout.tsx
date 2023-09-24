@@ -15,7 +15,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <div className="fixed inset-y-0 z-50 flex-col hidden w-56 h-full md:flex">
         <Sidebar />
       </div>
-      <main className="md:pl-56">{children}</main>
+      <main className="pt-[80px] md:pl-56">{children}</main>
     </div>
   );
 };
