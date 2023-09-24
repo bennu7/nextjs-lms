@@ -23,6 +23,7 @@ CREATE TABLE `Course` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     INDEX `Course_categoryId_idx`(`categoryId`),
+    UNIQUE INDEX `Course_title_key`(`title`),
     PRIMARY KEY (`id`),
     FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

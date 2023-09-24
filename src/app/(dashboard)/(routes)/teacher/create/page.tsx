@@ -42,11 +42,16 @@ const CreatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.post("/api/teacher", values);
-      router.push(`/teacher/courses/${response.data.id}`);
+      const response = await axios.post("/api/courses", values);
+      toast.success("Course created");
+      const convertSlug = (response.data.title as string)
+        .replace(/\s+/g, "-")
+        .toLowerCase();
+      router.push(`/teacher/courses/${convertSlug}`);
+      // router.push(`/teacher/courses/${response.data.id}`);
     } catch (err: any) {
       toast.error("Something went wrong", err);
-      console.error("ERROR onSubmit /api/teacher", err);
+      console.error("ERROR onSubmit /api/courses", err);
     }
   };
 
