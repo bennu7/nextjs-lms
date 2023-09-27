@@ -6,6 +6,8 @@ import { LayoutDashboard } from "lucide-react";
 import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
 
+import { TitleForm } from "./_components/title-form";
+
 interface CourseIdPageProps {
   params: {
     courseId: string;
@@ -55,11 +57,10 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
             <IconBadge icon={LayoutDashboard} size={"sm"} variant={"success"} />
             <h2 className="text-xl">Customize your course</h2>
           </div>
+          <TitleForm initialData={course} courseId={course.id} />
         </div>
       </div>
     </div>
   );
 };
-``;
-
 export default CourseIdPage;
