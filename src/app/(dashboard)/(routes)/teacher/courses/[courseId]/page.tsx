@@ -2,11 +2,18 @@ import React from "react";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { LayoutDashboard } from "lucide-react";
+import { type Metadata } from "next";
 
 import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
 
 import { TitleForm } from "./_components/title-form";
+import { DescriptionForm } from "./_components/desription-form";
+
+export const metadata: Metadata = {
+  title: "Course setup",
+  description: "Course setup",
+};
 
 interface CourseIdPageProps {
   params: {
@@ -26,7 +33,13 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
     },
   });
 
-  if (!course) return redirect("/");
+  // if (!course) return redirect("/");
+  if (!course)
+    return (
+      <div className="flex items-center justify-center w-full h-full text-2xl font-medium text-slate-700 mt-10">
+        Course not found
+      </div>
+    );
 
   const requiredFields = [
     course.title,
@@ -58,6 +71,7 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
             <h2 className="text-xl">Customize your course</h2>
           </div>
           <TitleForm initialData={course} courseId={course.id} />
+          <DescriptionForm initialData={course} courseId={course.id} />
         </div>
       </div>
     </div>

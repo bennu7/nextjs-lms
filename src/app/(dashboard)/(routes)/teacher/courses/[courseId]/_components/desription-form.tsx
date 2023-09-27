@@ -17,18 +17,25 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").trim(),
+  description: z
+    .string()
+    .min(10, "Description required and must be at least 3 characters")
+    .trim(),
 });
 
-interface TitleFormProps {
+interface DescriptionFormProps {
   initialData: Course;
   courseId: string;
 }
-const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
+const DescriptionForm: React.FC<DescriptionFormProps> = ({
+  courseId,
+  initialData,
+}) => {
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
@@ -36,7 +43,7 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: initialData.title,
+      description: initialData.description || "",
     },
   });
 
@@ -50,17 +57,17 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
       );
 
       if (status !== 200) {
-        toast.error("Failed to update course title");
+        toast.error("Failed to update course description");
         router.refresh();
         return;
       }
 
-      toast.success("Course title updated");
+      toast.success("Course description updated");
       toggleEdit();
-      router.push((data.title as string).replace(/\s/g, "-").toLowerCase());
+      router.refresh();
     } catch (error) {
       toast.error(
-        `Failed to update course title, detail: ${JSON.stringify(error)}`
+        `Failed to update course description, detail: ${JSON.stringify(error)}`
       );
       console.error(error);
     }
@@ -76,20 +83,27 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Title
+        Course Description
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
             <span>Cancel</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit title</span>
+              <span>Edit description</span>
             </div>
           )}
         </Button>
       </div>
       {!isEditing ? (
-        <p className="mt-2 text-sm ">{initialData.title}</p>
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.description && "text-slate-500 italic"
+          )}
+        >
+          {initialData.description || "No description"}
+        </p>
       ) : (
         <Form {...form}>
           <form
@@ -98,13 +112,13 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
+                    <Textarea
                       disabled={isSubmitting}
-                      placeholder="e.g. 'Introduction to Computer Science'"
+                      placeholder="e.g. 'This course is about...'"
                       {...field}
                       value={field.value}
                     />
@@ -125,4 +139,4 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
   );
 };
 
-export { TitleForm };
+export { DescriptionForm };
