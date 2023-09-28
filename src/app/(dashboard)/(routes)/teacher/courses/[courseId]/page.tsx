@@ -9,6 +9,7 @@ import { IconBadge } from "@/components/icon-badge";
 
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/desription-form";
+import { ImageForm } from "./_components/image-form";
 
 export const metadata: Metadata = {
   title: "Course setup",
@@ -72,6 +73,7 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
           </div>
           <TitleForm initialData={course} courseId={course.id} />
           <DescriptionForm initialData={course} courseId={course.id} />
+          <ImageForm initialData={course} courseId={course.id} />
         </div>
       </div>
     </div>

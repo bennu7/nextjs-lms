@@ -51,10 +51,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const { data, status } = await axios.patch(
-        `/api/courses/${courseId}`,
-        values
-      );
+      const { status } = await axios.patch(`/api/courses/${courseId}`, values);
 
       if (status !== 200) {
         toast.error("Failed to update course description");
