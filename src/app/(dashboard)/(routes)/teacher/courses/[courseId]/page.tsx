@@ -1,7 +1,7 @@
 import React from "react";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
+import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
 import { type Metadata } from "next";
 
 import { db } from "@/lib/db";
@@ -11,6 +11,7 @@ import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/desription-form";
 import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form";
+import { PriceForm } from "./_components/price-form";
 
 export const metadata: Metadata = {
   title: "Course setup",
@@ -62,14 +63,6 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
 
   const completionText = `(${completedFields}/${totalFields})`;
 
-  function category(
-    value: { id: string; name: string; createdAt: Date; updatedAt: Date },
-    index: number,
-    array: { id: string; name: string; createdAt: Date; updatedAt: Date }[]
-  ): { label: string; value: string } {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
@@ -81,9 +74,9 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
         </div>
       </div>
       <div className="grid grid-cols-1 gap-6 mt-16 md:grid-cols-2">
-        <div className="">
+        <div className="flex flex-col">
           <div className="flex items-center gap-x-2">
-            <IconBadge icon={LayoutDashboard} size={"sm"} variant={"success"} />
+            <IconBadge icon={LayoutDashboard} />
             <h2 className="text-xl">Customize your course</h2>
           </div>
           <TitleForm initialData={course} courseId={course.id} />
@@ -99,6 +92,22 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
               };
             })}
           />
+        </div>
+        <div className="space-y-6">
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={ListChecks} />
+              <h2 className="text-xl">Course Chapters</h2>
+            </div>
+            <div>TODO: Chapters!</div>
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={CircleDollarSign} />
+              <h2 className="text-xl">Sell your course</h2>
+            </div>
+            <PriceForm initialData={course} courseId={course.id} />
+          </div>
         </div>
       </div>
     </div>
