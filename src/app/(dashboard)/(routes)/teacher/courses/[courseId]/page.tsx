@@ -10,6 +10,7 @@ import { IconBadge } from "@/components/icon-badge";
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/desription-form";
 import { ImageForm } from "./_components/image-form";
+import { CategoryForm } from "./_components/category-form";
 
 export const metadata: Metadata = {
   title: "Course setup",
@@ -34,6 +35,12 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
     },
   });
 
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+
   // if (!course) return redirect("/");
   if (!course)
     return (
@@ -55,6 +62,14 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
 
   const completionText = `(${completedFields}/${totalFields})`;
 
+  function category(
+    value: { id: string; name: string; createdAt: Date; updatedAt: Date },
+    index: number,
+    array: { id: string; name: string; createdAt: Date; updatedAt: Date }[]
+  ): { label: string; value: string } {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
@@ -74,6 +89,16 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
           <TitleForm initialData={course} courseId={course.id} />
           <DescriptionForm initialData={course} courseId={course.id} />
           <ImageForm initialData={course} courseId={course.id} />
+          <CategoryForm
+            initialData={course}
+            courseId={course.id}
+            options={categories.map((category) => {
+              return {
+                value: category.id,
+                label: category.name,
+              };
+            })}
+          />
         </div>
       </div>
     </div>
