@@ -37,10 +37,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ endpoint, onChange }) => {
         toast.error(`Failed to upload file, detail: ${err.message}`);
       }}
       onClientUploadComplete={(res) => {
-        console.log(
-          "🚀 ~ file: file-upload.tsx:27 ~ onClientUploadComplete ~ res:",
-          res
-        );
         onChange(res?.[0].url);
       }}
       endpoint={endpoint}
