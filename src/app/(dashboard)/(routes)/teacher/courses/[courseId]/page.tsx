@@ -1,7 +1,12 @@
 import React from "react";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
+import {
+  CircleDollarSign,
+  File,
+  LayoutDashboard,
+  ListChecks,
+} from "lucide-react";
 import { type Metadata } from "next";
 
 import { db } from "@/lib/db";
@@ -12,6 +17,7 @@ import { DescriptionForm } from "./_components/desription-form";
 import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
+import { AttachmentForm } from "./_components/attachment-form";
 
 export const metadata: Metadata = {
   title: "Course setup",
@@ -33,6 +39,9 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
     where: {
       title: paramsSlug,
       userId,
+    },
+    include: {
+      attachments: true,
     },
   });
 
@@ -107,6 +116,13 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
               <h2 className="text-xl">Sell your course</h2>
             </div>
             <PriceForm initialData={course} courseId={course.id} />
+          </div>
+          <div className="">
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={File} />
+              <h2 className="text-xl">Resources & Attachments</h2>
+            </div>
+            <AttachmentForm initialData={course} courseId={course.id} />
           </div>
         </div>
       </div>
