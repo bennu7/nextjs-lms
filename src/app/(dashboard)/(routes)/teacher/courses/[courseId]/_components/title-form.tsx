@@ -58,11 +58,12 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
       toast.success("Course title updated");
       toggleEdit();
       router.push((data.title as string).replace(/\s/g, "-").toLowerCase());
-    } catch (error) {
+    } catch (err: any) {
       toast.error(
-        `Failed to update course title, detail: ${JSON.stringify(error)}`
+        `Failed to create chapters, detail: ${JSON.stringify(
+          err.message || err
+        )}`
       );
-      console.error(error);
     }
   };
 

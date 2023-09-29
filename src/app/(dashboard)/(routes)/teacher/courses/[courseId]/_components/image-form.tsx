@@ -38,11 +38,12 @@ const ImageForm: React.FC<ImageFormProps> = ({ courseId, initialData }) => {
       toast.success("Course image updated");
       toggleEdit();
       router.refresh();
-    } catch (error) {
+    } catch (err: any) {
       toast.error(
-        `Failed to update course image, detail: ${JSON.stringify(error)}`
+        `Failed to create chapters, detail: ${JSON.stringify(
+          err.message || err
+        )}`
       );
-      console.error(error);
     }
   };
 

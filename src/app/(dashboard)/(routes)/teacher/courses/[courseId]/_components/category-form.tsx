@@ -68,11 +68,12 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
       toast.success("Course category updated");
       toggleEdit();
       router.refresh();
-    } catch (error) {
+    } catch (err: any) {
       toast.error(
-        `Failed to update course category, detail: ${JSON.stringify(error)}`
+        `Failed to create chapters, detail: ${JSON.stringify(
+          err.message || err
+        )}`
       );
-      console.error(error);
     }
   };
 

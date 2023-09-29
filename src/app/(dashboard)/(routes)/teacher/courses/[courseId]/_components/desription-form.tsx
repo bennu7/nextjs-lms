@@ -62,11 +62,12 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
       toast.success("Course description updated");
       toggleEdit();
       router.refresh();
-    } catch (error) {
+    } catch (err: any) {
       toast.error(
-        `Failed to update course description, detail: ${JSON.stringify(error)}`
+        `Failed to create chapters, detail: ${JSON.stringify(
+          err.message || err
+        )}`
       );
-      console.error(error);
     }
   };
 

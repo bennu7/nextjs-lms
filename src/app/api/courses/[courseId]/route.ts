@@ -12,7 +12,7 @@ export async function PATCH(
     const values = await req.json();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized Permission", { status: 401 });
     }
 
     const course = await db.course.update({

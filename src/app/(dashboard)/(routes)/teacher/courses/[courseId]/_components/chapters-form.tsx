@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Course } from "@prisma/client";
+import { Course, Chapter } from "@prisma/client";
 import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -18,29 +18,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/format";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  price: z.coerce.number().min(1, {
-    message: "Price must be greater than 1",
-  }),
+  title: z
+    .string()
+    .min(4, "Title required and must be at least 4 character")
+    .trim(),
 });
 
-interface PriceFormProps {
-  initialData: Course;
+interface ChaptersFormProps {
+  initialData: Course & { chapters: Chapter[] };
   courseId: string;
 }
-const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
+const ChaptersForm: React.FC<ChaptersFormProps> = ({
+  courseId,
+  initialData,
+}) => {
   const [mount, setMount] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      price: initialData.price || 0,
+      title: "",
     },
   });
 
@@ -48,17 +52,19 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log("🚀 ~ file: price-form.tsx:49 ~ onSubmit ~ values:", values);
-      const { status } = await axios.patch(`/api/courses/${courseId}`, values);
+      const { status } = await axios.post(
+        `/api/courses/${courseId}/chapters`,
+        values
+      );
 
-      if (status !== 200) {
-        toast.error("Failed to update course price");
+      if (status !== 201) {
+        toast.error("Failed to create chapters");
         router.refresh();
         return;
       }
 
-      toast.success("Course price updated");
-      toggleEdit();
+      toast.success("Chapters created");
+      toggleCreating();
       router.refresh();
     } catch (err: any) {
       toast.error(
@@ -69,7 +75,7 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
     }
   };
 
-  const toggleEdit = () => setIsEditing((prev) => !prev);
+  const toggleCreating = () => setIsCreating((prev) => !prev);
 
   useEffect(() => {
     setMount(true);
@@ -79,28 +85,19 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Price
-        <Button variant={"ghost"} onClick={toggleEdit}>
-          {isEditing ? (
+        Course Chapters
+        <Button variant={"ghost"} onClick={toggleCreating}>
+          {isCreating ? (
             <span>Cancel</span>
           ) : (
             <div className="flex flex-row">
-              <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit price</span>
+              <PlusCircle className="w-4 h-4 mr-2" />
+              <span>Add a chapter</span>
             </div>
           )}
         </Button>
       </div>
-      {!isEditing ? (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !initialData.price && "text-slate-500 italic"
-          )}
-        >
-          {initialData.price ? formatPrice(initialData.price) : "No price"}
-        </p>
-      ) : (
+      {isCreating && (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -108,15 +105,13 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
           >
             <FormField
               control={form.control}
-              name="price"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
-                      type="number"
-                      step="0.01"
                       disabled={isSubmitting}
-                      placeholder="set a price for your course"
+                      placeholder="e.g. 'This chapter is about Introduction to the course...'"
                       {...field}
                       value={field.value}
                     />
@@ -127,14 +122,30 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Save
+                Create
               </Button>
             </div>
           </form>
         </Form>
       )}
+      {!isCreating && (
+        <div
+          className={cn(
+            "text-sm mt-2",
+            !initialData.chapters.length && "text-slate-500 italic"
+          )}
+        >
+          {!initialData.chapters.length && "No Chapters"}
+          {/* {TODO: add a list of chapters} */}
+        </div>
+      )}
+      {!isCreating && (
+        <p className="text-xs text-muted-foreground mt-4">
+          Drag and drop to reorder the chapters
+        </p>
+      )}
     </div>
   );
 };
 
-export { PriceForm };
+export { ChaptersForm };

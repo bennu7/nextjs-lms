@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
-import { utapi } from "uploadthing/server";
 
 import { db } from "@/lib/db";
 
-export async function DELETE(
+export async function POST(
   req: NextRequest,
-  { params }: { params: { courseId: string; attachmentId: string } }
+  { params }: { params: { courseId: string } }
 ) {
   try {
     const { userId } = auth();
+    const values = await req.json();
+
     if (!userId) {
       return new NextResponse("Unauthorized Permission", { status: 401 });
     }
@@ -20,38 +21,37 @@ export async function DELETE(
         userId,
       },
     });
-    if (!courseOwner) {
-      return new NextResponse("Unauthorized OWNER COURSE", { status: 401 });
-    }
 
-    const findAttachment = await db.attachment.findUnique({
+    if (!courseOwner)
+      return new NextResponse("Unauthorized OWNER COURSE", { status: 401 });
+
+    const lastChapter = await db.chapter.findFirst({
       where: {
-        id: params.attachmentId,
         courseId: params.courseId,
       },
-    });
-    if (!findAttachment) {
-      return new NextResponse("Attachment OR Course ID NOT FOUND", {
-        status: 404,
-      });
-    }
-
-    utapi.deleteFiles(findAttachment.name);
-
-    const attachment = await db.attachment.delete({
-      where: {
-        id: params.attachmentId,
+      orderBy: {
+        position: "desc",
       },
     });
 
-    return new NextResponse(JSON.stringify(attachment), {
-      status: 200,
+    const newPosition = lastChapter ? lastChapter.position + 1 : 1;
+
+    const chapter = await db.chapter.create({
+      data: {
+        title: values.title,
+        courseId: params.courseId,
+        position: newPosition,
+      },
+    });
+
+    return new NextResponse(JSON.stringify(chapter), {
+      status: 201,
       headers: {
         "Content-Type": "application/json",
       },
     });
   } catch (err: any) {
-    console.error("COURSE ATTACHMENTS ERR DELETE : ", err);
+    console.error("COURSE CHAPTERS ERR POST : ", err);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

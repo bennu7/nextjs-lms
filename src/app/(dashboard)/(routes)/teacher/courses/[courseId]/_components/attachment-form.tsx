@@ -69,8 +69,11 @@ const AttachmentForm: React.FC<AttachmentFormProps> = ({
       toast.success("Attachment deleted");
       router.refresh();
     } catch (err: any) {
-      toast.error(`Failed to delete attachment, detail: ${err.message}`);
-      console.error(err);
+      toast.error(
+        `Failed to create chapters, detail: ${JSON.stringify(
+          err.message || err
+        )}`
+      );
     } finally {
       setDeletingId(null);
     }

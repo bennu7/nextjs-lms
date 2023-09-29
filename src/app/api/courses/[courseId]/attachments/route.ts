@@ -12,7 +12,7 @@ export async function POST(
     const values = await req.json();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized Permission", { status: 401 });
     }
 
     const courseOwner = await db.course.findUnique({
