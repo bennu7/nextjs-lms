@@ -48,7 +48,6 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log("🚀 ~ file: price-form.tsx:49 ~ onSubmit ~ values:", values);
       const { status } = await axios.patch(`/api/courses/${courseId}`, values);
 
       if (status !== 200) {

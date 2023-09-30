@@ -114,7 +114,7 @@ const CourseIdPage: React.FC<CourseIdPageProps> = async ({ params }) => {
           />
         </div>
         <div className="space-y-6">
-          <div>
+          <div className="flex flex-col">
             <div className="flex items-center gap-x-2">
               <IconBadge icon={ListChecks} />
               <h2 className="text-xl">Course Chapters</h2>

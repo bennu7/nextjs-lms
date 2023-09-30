@@ -6,9 +6,9 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams, usePathname } from "next/navigation";
 
 import {
   Form,
@@ -20,6 +20,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+
+import { ChaptersList } from "./chapterts-list";
 
 const formSchema = z.object({
   title: z
@@ -40,6 +42,8 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const getLastPathName = pathname.split("/").slice(-1)[0];
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,11 +72,44 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
       router.refresh();
     } catch (err: any) {
       toast.error(
-        `Failed to create chapters, detail: ${JSON.stringify(
+        `Failed to CREATE chapters, detail: ${JSON.stringify(
           err.message || err
         )}`
       );
     }
+  };
+
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
+    try {
+      setIsUpdating(true);
+      const { status } = await axios.put(
+        `/api/courses/${courseId}/chapters/reorder`,
+        {
+          list: updateData,
+        }
+      );
+
+      if (status !== 200) {
+        toast.error("Failed to update chapter reordered");
+        router.refresh();
+        return;
+      }
+
+      toast.success("List reordered Course Chapters updated");
+      router.refresh();
+    } catch (err: any) {
+      toast.error(
+        `Failed to PUT chapters reordered, detail: ${JSON.stringify(
+          err.message || err
+        )}`
+      );
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const onEdit = async (chapterId: string) => {
+    router.push(`/dashboard/courses/${getLastPathName}/chapters/${chapterId}`);
   };
 
   const toggleCreating = () => setIsCreating((prev) => !prev);
@@ -83,7 +120,12 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
   if (!mount) return null;
 
   return (
-    <div className="p-4 mt-6 border rounded-md bg-slate-100">
+    <div className="relative p-4 mt-6 border rounded-md bg-slate-100">
+      {isUpdating && (
+        <div className="absolute h-full w-full bg-slate-500/20 right-0 top-0 rounded-md flex items-center justify-center">
+          <Loader2 className="w-4 h-4 animate-spin text-sky-700" />
+        </div>
+      )}
       <div className="flex items-center justify-between font-medium">
         Course Chapters
         <Button variant={"ghost"} onClick={toggleCreating}>
@@ -136,7 +178,11 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
           )}
         >
           {!initialData.chapters.length && "No Chapters"}
-          {/* {TODO: add a list of chapters} */}
+          <ChaptersList
+            onEdit={onEdit}
+            onReorder={onReorder}
+            items={initialData.chapters || []}
+          />
         </div>
       )}
       {!isCreating && (
