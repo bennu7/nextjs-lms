@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader2, PlusCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import { useRouter, useParams, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import {
   Form,
@@ -109,7 +109,12 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
   };
 
   const onEdit = async (chapterId: string) => {
-    router.push(`/dashboard/courses/${getLastPathName}/chapters/${chapterId}`);
+    router.push(
+      `/teacher/courses/${getLastPathName}/chapters/${chapterId
+        .split(" ")
+        .join("-")
+        .toLowerCase()}`
+    );
   };
 
   const toggleCreating = () => setIsCreating((prev) => !prev);

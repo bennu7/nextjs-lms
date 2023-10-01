@@ -98,7 +98,7 @@ const ChaptersList: React.FC<ChaptersListProps> = ({
                       </Badge>
                       <Pencil
                         className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
-                        onClick={() => onEdit(chapter.id)}
+                        onClick={() => onEdit(chapter.title)}
                       />
                     </div>
                   </div>

@@ -7,7 +7,6 @@ import axios from "axios";
 import { File, Loader2, PlusCircle, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
