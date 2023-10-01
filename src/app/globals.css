@@ -83,3 +83,9 @@ body,
 
 /* import uploadthing styles */
 @import "~@uploadthing/react/styles.css";
+
+/* import css snow react-quill */
+@import "~react-quill/dist/quill.snow.css";
+
+/* import css bubble react-squill */
+@import "~react-quill/dist/quill.bubble.css";

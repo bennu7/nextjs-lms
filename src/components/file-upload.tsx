@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+// import "@uploadthing/react/styles.css" // *import to globals.css
 
 import { UploadDropzone, UploadButton, Uploader } from "@/lib/uploadthing";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
