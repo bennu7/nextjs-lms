@@ -70,7 +70,7 @@ const ChapterDescriptionForm: React.FC<ChapterDescriptionFormProps> = ({
       router.refresh();
     } catch (err: any) {
       toast.error(
-        `Failed to create chapters, detail: ${JSON.stringify(
+        `Failed to update description chapters, detail: ${JSON.stringify(
           err.message || err
         )}`
       );

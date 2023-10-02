@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Chapter } from "@prisma/client";
 import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,25 +13,27 @@ import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").trim(),
+  isFree: z.boolean().default(false),
 });
 
-interface ChapterTitleFormProps {
-  initialData: { title: string };
+interface ChapterAccessFormProps {
+  initialData: Chapter;
   courseId: string;
   chapterId: string;
 }
-const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
-  courseId,
+const ChapterAccessForm: React.FC<ChapterAccessFormProps> = ({
   initialData,
+  courseId,
   chapterId,
 }) => {
   const [mount, setMount] = useState(false);
@@ -40,7 +43,7 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: initialData.title,
+      isFree: !!initialData.isFree,
     },
   });
 
@@ -48,23 +51,23 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const { data, status } = await axios.patch(
+      const { status } = await axios.patch(
         `/api/courses/${courseId}/chapters/${chapterId}`,
         values
       );
 
       if (status !== 200) {
-        toast.error("Failed to update chapter title");
+        toast.error("Failed to update access chapter");
         router.refresh();
         return;
       }
 
-      toast.success("Chapter title updated");
+      toast.success("Chapter access updated");
       toggleEdit();
-      router.push((data.title as string).replace(/\s/g, "-").toLowerCase());
+      router.refresh();
     } catch (err: any) {
       toast.error(
-        `Failed to update title chapters, detail: ${JSON.stringify(
+        `Failed to update access chapters, detail: ${JSON.stringify(
           err.message || err
         )}`
       );
@@ -81,20 +84,31 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Chapter Title
+        Chapter access settings
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
             <span>Cancel</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit title</span>
+              <span>Edit access</span>
             </div>
           )}
         </Button>
       </div>
       {!isEditing ? (
-        <p className="mt-2 text-sm ">{initialData.title}</p>
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.isFree && "text-slate-500 italic"
+          )}
+        >
+          {initialData.isFree ? (
+            <>this chapter is free for preview</>
+          ) : (
+            <>This chapter is not free.</>
+          )}
+        </p>
       ) : (
         <Form {...form}>
           <form
@@ -103,17 +117,22 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
           >
             <FormField
               control={form.control}
-              name="title"
+              name="isFree"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g. 'Introduction to the chapter'"
-                      {...field}
-                      value={field.value}
+                    <Checkbox
+                      checked={field.value}
+                      onChange={field.onChange}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormDescription>
+                      Check this box if you want to make this chapter free for
+                      preview
+                    </FormDescription>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -130,4 +149,4 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
   );
 };
 
-export { ChapterTitleForm };
+export { ChapterAccessForm };
