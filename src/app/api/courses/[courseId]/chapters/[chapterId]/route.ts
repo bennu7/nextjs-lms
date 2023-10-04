@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
+import Mux from "@mux/mux-node";
 
 import { db } from "@/lib/db";
+
+const { Video, Data } = new Mux(
+  process.env.MUX_TOKEN_ID as string,
+  process.env.MUX_TOKEN_SECRET as string
+);
 
 export async function PATCH(
   req: NextRequest,
@@ -43,7 +49,36 @@ export async function PATCH(
       },
     });
 
-    // TODO: handle video upload
+    if (values.videoUrl) {
+      const existingMuxData = await db.muxData.findFirst({
+        where: {
+          chapterId: params.chapterId,
+        },
+      });
+
+      if (existingMuxData) {
+        await Video.Assets.del(existingMuxData.assetId);
+        await db.muxData.delete({
+          where: {
+            id: existingMuxData.id,
+          },
+        });
+      }
+
+      const asset = await Video.Assets.create({
+        input: values.videoUrl,
+        playback_policy: "public",
+        test: false,
+      });
+
+      await db.muxData.create({
+        data: {
+          assetId: asset.id,
+          playbackId: asset?.playback_ids?.[0]?.id || "",
+          chapterId: params.chapterId,
+        },
+      });
+    }
 
     return new NextResponse(JSON.stringify(updated), { status: 200 });
   } catch (err: any) {
