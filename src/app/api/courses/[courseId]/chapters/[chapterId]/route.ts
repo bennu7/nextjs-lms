@@ -86,3 +86,89 @@ export async function PATCH(
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { courseId: string; chapterId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    if (!userId)
+      return new NextResponse("Unauthorized Permission", { status: 401 });
+
+    const courseOwner = await db.course.findUnique({
+      where: {
+        id: params.courseId,
+        userId,
+      },
+    });
+
+    if (!courseOwner)
+      return new NextResponse("Unauthorized OWNER COURSE", { status: 401 });
+
+    const chapter = await db.chapter.findUnique({
+      where: {
+        id: params.chapterId,
+        courseId: params.courseId,
+      },
+    });
+
+    if (!chapter) return new NextResponse("Chapter Not Found", { status: 404 });
+
+    if (chapter.videoUrl) {
+      const existingMuxData = await db.muxData.findFirst({
+        where: {
+          chapterId: params.chapterId,
+        },
+      });
+
+      if (existingMuxData) {
+        await Video.Assets.del(existingMuxData.assetId).catch((err) => {
+          console.error(
+            "Mux Video Assets Delete Error | 404 Not Found : ",
+            err
+          );
+        });
+
+        await db.muxData.delete({
+          where: {
+            id: existingMuxData.id,
+          },
+        });
+      }
+    }
+
+    await db.chapter.delete({
+      where: {
+        id: params.chapterId,
+      },
+    });
+
+    const publishedChapersInCourse = await db.chapter.findMany({
+      where: {
+        courseId: params.courseId,
+        isPublished: true,
+      },
+    });
+
+    if (!publishedChapersInCourse.length) {
+      await db.course.update({
+        where: {
+          id: params.courseId,
+        },
+        data: {
+          isPublished: false,
+        },
+      });
+    }
+
+    return new NextResponse("SUCCESS DELETED CHAPTER", { status: 200 });
+  } catch (err: any) {
+    console.error("COURSE CHAPTERS_ID ERR DELETE : ", err);
+    return new NextResponse(
+      `Internal Server Error, ${JSON.stringify(err.message || err)}`,
+      { status: 500 }
+    );
+  }
+}
