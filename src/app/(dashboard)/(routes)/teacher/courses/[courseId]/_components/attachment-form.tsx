@@ -36,19 +36,20 @@ const AttachmentForm: React.FC<AttachmentFormProps> = ({
       );
 
       if (status !== 201 && status !== 200) {
-        toast.error("Failed to update course image");
+        toast.error("Failed to update course attachment");
         router.refresh();
         return;
       }
 
-      toast.success("Course image updated");
+      toast.success("Course attachment updated");
       toggleEdit();
       router.refresh();
     } catch (error) {
       toast.error(
-        `Failed to update course image, detail: ${JSON.stringify(error)}`
+        `Failed to update course attachment, detail: ${JSON.stringify(error)}`
       );
-      console.error(error);
+    } finally {
+      router.refresh();
     }
   };
 
@@ -75,6 +76,7 @@ const AttachmentForm: React.FC<AttachmentFormProps> = ({
       );
     } finally {
       setDeletingId(null);
+      router.refresh();
     }
   };
 

@@ -8,16 +8,15 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/modals/confirm-modal";
+import { useConfettiStore } from "@/hooks/use-confetti-store";
 
-interface ChapterActionsProps {
+interface CourseActionsProps {
   disabled: boolean;
   courseId: string;
-  chapterId: string;
   isPublished: boolean;
   slugCourse: string;
 }
-const ChapterActions: React.FC<ChapterActionsProps> = ({
-  chapterId,
+const CourseActions: React.FC<CourseActionsProps> = ({
   courseId,
   disabled,
   isPublished,
@@ -25,6 +24,7 @@ const ChapterActions: React.FC<ChapterActionsProps> = ({
 }) => {
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const confetti = useConfettiStore();
 
   const router = useRouter();
 
@@ -32,18 +32,18 @@ const ChapterActions: React.FC<ChapterActionsProps> = ({
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}`);
+      await axios.delete(`/api/courses/${courseId}`);
 
-      toast.success("Chapter deleted successfully");
-      router.push(`/teacher/courses/${slugCourse}`);
+      toast.success("Course deleted successfully");
     } catch (err: any) {
       toast.error(
-        `Failed to delete chapter, detail: ${JSON.stringify(
+        `Failed to delete course, detail: ${JSON.stringify(
           err.response.data || err.message || err
         )}`
       );
     } finally {
       setIsLoading(false);
+      router.push(`/teacher/courses`);
     }
   };
 
@@ -51,20 +51,18 @@ const ChapterActions: React.FC<ChapterActionsProps> = ({
     try {
       setIsLoading(true);
       if (isPublished) {
-        await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/unpublish`
-        );
+        await axios.patch(`/api/courses/${courseId}/unpublish`);
 
-        toast.success("Chapter unpublished successfully");
+        toast.success("Course unpublished successfully");
       } else {
-        await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/publish`
-        );
-        toast.success("Chapter published successfully");
+        await axios.patch(`/api/courses/${courseId}/publish`);
+
+        toast.success("Course published successfully");
+        confetti.onOpen();
       }
     } catch (err: any) {
       toast.error(
-        `Failed to update publish chapter, detail: ${JSON.stringify(
+        `Failed to update publish course, detail: ${JSON.stringify(
           err.response.data || err.message || err
         )}`
       );
@@ -106,4 +104,4 @@ const ChapterActions: React.FC<ChapterActionsProps> = ({
   );
 };
 
-export { ChapterActions };
+export { CourseActions };
