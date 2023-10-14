@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import { type Metadata } from "next";
 
 import {
   Form,
@@ -25,6 +26,11 @@ const formSchema = z.object({
     message: "Title is required",
   }),
 });
+
+const metadata: Metadata = {
+  title: "Create Course",
+  description: "Create a new course",
+};
 
 const CreatePage = () => {
   const router = useRouter();
@@ -55,6 +61,7 @@ const CreatePage = () => {
   };
 
   useEffect(() => {
+    document.title = metadata.title as string;
     setMounted(true);
   }, []);
   if (!mounted) return null;
