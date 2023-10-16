@@ -25,8 +25,12 @@ const iconMap: Record<Category["name"], IconType> = {
   Engineering: FcEngineering,
 };
 
+type CategoryWithSlugName = Category & {
+  slugName: string;
+};
+
 interface CategoriesProps {
-  items: Category[];
+  items: CategoryWithSlugName[];
 }
 const Categories: React.FC<CategoriesProps> = ({ items }) => {
   return (
@@ -37,6 +41,7 @@ const Categories: React.FC<CategoriesProps> = ({ items }) => {
           label={item.name}
           icon={iconMap[item.name]}
           value={item.id}
+          slugName={item.slugName}
         />
       ))}
     </div>
