@@ -12,6 +12,7 @@ export const config = {
     "/dashboard(.*)",
     "/teacher(.*)",
     "/search(.*)",
+    "/courses(.*)",
     "/",
     "/(api|trpc)(.*)",
   ],
