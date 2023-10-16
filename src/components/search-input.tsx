@@ -17,8 +17,8 @@ const SearchInput = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // const currentCategoryId = searchParams.get("categoryId");
-  const currentCategory = searchParams.get("category");
+  const currentCategoryId = searchParams.get("categoryId");
+  // const currentCategory = searchParams.get("category");
 
   useEffect(() => {
     setMounted(true);
@@ -27,8 +27,8 @@ const SearchInput = () => {
       {
         url: pathname,
         query: {
-          // categoryId: currentCategoryId,
-          category: currentCategory,
+          categoryId: currentCategoryId,
+          // category: currentCategory,
           title: debouncedvalue,
         },
       },
@@ -36,7 +36,7 @@ const SearchInput = () => {
     );
 
     router.push(url);
-  }, [currentCategory, debouncedvalue, pathname, router]);
+  }, [currentCategoryId, debouncedvalue, pathname, router]);
 
   if (!mounted) return null;
 

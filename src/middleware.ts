@@ -8,5 +8,11 @@ export default authMiddleware({
 });
 
 export const config = {
-  matcher: ["/dashboard(.*)", "/teacher(.*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    "/dashboard(.*)",
+    "/teacher(.*)",
+    "/search(.*)",
+    "/",
+    "/(api|trpc)(.*)",
+  ],
 };

@@ -23,12 +23,12 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // const currentCategoryId = searchParams.get("categoryId");
-  const currentCategory = searchParams.get("category");
+  const currentCategoryId = searchParams.get("categoryId");
+  // const currentCategory = searchParams.get("category");
   const currentTitle = searchParams.get("title");
 
-  // const isSelected = currentCategoryId === value;
-  const isSelected = currentCategory === slugName;
+  const isSelected = currentCategoryId === value;
+  // const isSelected = currentCategory === slugName;
 
   const onClick = () => {
     const url = qs.stringifyUrl(
@@ -36,8 +36,8 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
         url: pathName,
         query: {
           title: currentTitle,
-          // categoryId: isSelected ? null : value, // ini jika sudah terpilih maka akan di unselect
-          category: isSelected ? null : slugName,
+          categoryId: isSelected ? null : value, // ini jika sudah terpilih maka akan di unselect
+          // category: isSelected ? null : slugName,
         },
       },
       { skipEmptyString: true, skipNull: true }
