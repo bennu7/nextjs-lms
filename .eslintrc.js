@@ -28,10 +28,11 @@ module.exports = {
   },
   plugins: ["@typescript-eslint", "react"],
   rules: {
-    "@typescript-eslint/no-unused-vars": "warn",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "prefer-const": "warn",
   },
 };

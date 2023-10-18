@@ -12,6 +12,7 @@ CREATE TABLE `Course` (
 
     UNIQUE INDEX `Course_title_key`(`title`),
     INDEX `Course_categoryId_idx`(`categoryId`),
+    FULLTEXT INDEX `Course_title_idx`(`title`),
     PRIMARY KEY (`id`),
     FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -105,6 +106,5 @@ CREATE TABLE `StripeCustomer` (
 
     UNIQUE INDEX `StripeCustomer_userId_key`(`userId`),
     UNIQUE INDEX `StripeCustomer_stripeCustomerId_key`(`stripeCustomerId`),
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`userId`) REFERENCES `User`(`id`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

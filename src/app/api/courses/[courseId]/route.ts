@@ -22,6 +22,20 @@ export async function PATCH(
       return new NextResponse("Unauthorized Permission", { status: 401 });
     }
 
+    const findCourse = await db.course.findFirst({
+      where: {
+        id: params.courseId,
+        userId,
+      },
+    });
+
+    if (findCourse && findCourse.imageUrl) {
+      const nameFile = findCourse.imageUrl.split("/").pop() as string;
+      utapi.deleteFiles(nameFile).catch((err) => {
+        console.log("- REMOVED FILE findCourse.imageUrl PATCH ERROR : ", err);
+      });
+    }
+
     const course = await db.course.update({
       where: {
         id: params.courseId,

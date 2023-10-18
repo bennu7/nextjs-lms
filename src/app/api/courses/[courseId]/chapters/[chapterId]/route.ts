@@ -57,7 +57,12 @@ export async function PATCH(
       });
 
       if (existingMuxData) {
-        await Video.Assets.del(existingMuxData.assetId);
+        Video.Assets.del(existingMuxData.assetId).catch((err) => {
+          console.error(
+            "Mux Video Assets Delete Error | 404 Not Found : ",
+            err
+          );
+        });
         await db.muxData.delete({
           where: {
             id: existingMuxData.id,
