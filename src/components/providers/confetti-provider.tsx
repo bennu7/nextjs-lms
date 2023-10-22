@@ -12,8 +12,7 @@ const ConfettiProvider = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  if (!mounted) return null;
-  if (!confetti.isOpen) return null;
+  if (!mounted || !confetti.isOpen) return null;
 
   return (
     <ReactConfett

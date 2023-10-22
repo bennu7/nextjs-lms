@@ -30,6 +30,49 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 }) => {
   const [mounted, setMounted] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
+  const confetti = useConfettiStore();
+
+  const onEnd = async () => {
+    try {
+      if (completeOnEnd) {
+        await axios.put(
+          `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+          {
+            isCompleted: true,
+          }
+        );
+        toast.success("Chapter marked as complete!");
+
+        router.refresh();
+        if (nextChapterId) {
+          router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+        }
+
+        if (!nextChapterId) {
+          confetti.onOpen();
+        }
+        return;
+      }
+
+      if (!nextChapterId) {
+        confetti.onOpen();
+      }
+
+      toast.success("Chapter completed!");
+      router.refresh();
+
+      if (nextChapterId) {
+        router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+      }
+    } catch (err: any) {
+      toast.error(
+        `Error marking chapter as complete: ${JSON.stringify(
+          err.message || err
+        )}`
+      );
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -55,7 +98,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           title={title}
           className={cn(!isReady && "hidden")}
           onCanPlay={() => setIsReady(true)}
-          onEnded={() => {}}
+          onEnded={onEnd}
           autoPlay
         />
       )}
