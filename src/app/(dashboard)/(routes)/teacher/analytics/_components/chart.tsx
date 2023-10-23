@@ -13,7 +13,7 @@ interface ChartProps {
 }
 const Chart: React.FC<ChartProps> = ({ data }) => {
   return (
-    <Card>
+    <Card className="py-4">
       <ResponsiveContainer width={"100%"} height={350}>
         <BarChart data={data}>
           <XAxis

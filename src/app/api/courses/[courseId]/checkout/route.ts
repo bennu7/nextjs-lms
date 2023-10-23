@@ -13,8 +13,6 @@ interface CheckoutParams {
 
 export async function POST(req: NextRequest, { params }: CheckoutParams) {
   try {
-    console.log("MASOOKK");
-
     const user = await currentUser();
 
     if (!user || !user.id || !user.emailAddresses?.[0]?.emailAddress)

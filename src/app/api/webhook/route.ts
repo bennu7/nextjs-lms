@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const signature = headers().get("Stripe-Signature") as string;
+  console.log("masuk mode webhook stripe");
 
   let event: Stripe.Event;
   try {
