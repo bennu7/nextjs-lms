@@ -11,6 +11,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, "Image is required").trim(),
@@ -24,6 +25,7 @@ const ImageForm: React.FC<ImageFormProps> = ({ courseId, initialData }) => {
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -57,19 +59,19 @@ const ImageForm: React.FC<ImageFormProps> = ({ courseId, initialData }) => {
   return (
     <div className="flex flex-col p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Image
+        {language === "en" ? "Course Image" : "Gambar Kursus"}
         <Button variant={"ghost"} onClick={toggleEdit}>
-          {isEditing && <span>Cancel</span>}
+          {isEditing && <span>{language === "en" ? "Cancel" : "Batal"}</span>}
           {!isEditing &&
             (!initialData.imageUrl ? (
               <>
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Add an image
+                {language === "en" ? "Add an image" : "Tambahkan gambar"}
               </>
             ) : (
               <>
                 <Pencil className="h-4 w-4 mr-2" />
-                Edit image
+                {language === "en" ? "Edit image" : "Ubah gambar"}
               </>
             ))}
         </Button>
@@ -100,7 +102,9 @@ const ImageForm: React.FC<ImageFormProps> = ({ courseId, initialData }) => {
             }}
           />
           <div className="text-xs text-muted-foreground mt-4">
-            16:9 aspect ratio recommended
+            {language === "en"
+              ? "16:9 aspect ratio recommended"
+              : "Rasio aspek 16:9 disarankan"}
           </div>
         </div>
       )}

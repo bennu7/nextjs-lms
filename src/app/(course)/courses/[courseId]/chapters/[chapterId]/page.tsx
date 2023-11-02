@@ -10,6 +10,7 @@ import { Preview } from "@/components/preview";
 import { VideoPlayer } from "./_components/video-player";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { CourseProgressButon } from "./_components/course-progress-button";
+import { VideoReactPlayer } from "./_components/video-react-player";
 
 const ChapterIdPage = async ({
   params,
@@ -31,6 +32,7 @@ const ChapterIdPage = async ({
     nextChapter,
     purchase,
     userProgress,
+    doneAllChapterVideos,
   } = await getChapter({
     userId,
     chapterId: params.chapterId,
@@ -46,19 +48,21 @@ const ChapterIdPage = async ({
     <div>
       {userProgress?.isCompleted && (
         <Banner
-          label="You already completed this chapter"
+          labelEn="You already completed this chapter"
+          labelId="Anda sudah menyelesaikan bab ini"
           variant={"success"}
         />
       )}
       {isLocked && (
         <Banner
-          label="You need this purchase this course to watch this chapter"
+          labelEn="You need this purchase this course to watch this chapter"
+          labelId="Anda perlu membeli kursus ini untuk menonton bab ini"
           variant={"warning"}
         />
       )}
       <div className="flex flex-col mx-auto max-w-4xl pb-20">
         <div className="p-4">
-          <VideoPlayer
+          {/* <VideoPlayer
             chapterId={params.chapterId}
             title={chapter.title}
             courseId={params.courseId}
@@ -66,6 +70,16 @@ const ChapterIdPage = async ({
             playbackId={muxData?.playbackId!}
             isLocked={isLocked}
             completeOnEnd={completeOnEnd}
+          /> */}
+          <VideoReactPlayer
+            url={chapter.videoUrl!}
+            chapterId={params.chapterId}
+            title={chapter.title}
+            courseId={params.courseId}
+            nextChapterId={nextChapter?.id}
+            isLocked={isLocked}
+            completeOnEnd={completeOnEnd}
+            doneAllChapterVideos={doneAllChapterVideos}
           />
         </div>
         <div className="p-4 flex flex-col md:flex-row items-center justify-between">

@@ -1,8 +1,7 @@
 import React from "react";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
+import { Eye, LayoutDashboard, Video } from "lucide-react";
 import { type Metadata } from "next";
 
 import { db } from "@/lib/db";
@@ -14,6 +13,9 @@ import { ChapterDescriptionForm } from "./_components/chapter-desription-form";
 import { ChapterAccessForm } from "./_components/chapter-access-form";
 import { ChapterVideoForm } from "./_components/chapter-video-form";
 import { ChapterActions } from "./_components/chapter-actions";
+import { BackToCourseSetup } from "./_components/back-to-course-setup";
+import { ChapterCreation } from "./_components/chapter-creation";
+import { ChapterForms } from "./_components/chapter-forms";
 
 export const metadata: Metadata = {
   title: "Course chapter setup",
@@ -75,27 +77,30 @@ const ChapterIdPage = async ({
     <>
       {!chapter.isPublished && (
         <Banner
-          label="This chapter is unpublished. It will not be visible in the course"
+          labelEn="This chapter is unpublished. It will not be visible in the course"
+          labelId="Bab ini belum dipublikasikan. Bab ini tidak akan terlihat di dalam kursus"
           variant={"warning"}
         />
       )}
       <div className="p-6 flex flex-col">
         <div className="flex items-center justify-between">
           <div className="w-full flex flex-col">
-            <Link
+            <BackToCourseSetup params={params} />
+            {/* <Link
               href={`/teacher/courses/${params.courseId}`}
               className="flex items-center text-sm hover:opacity-75 transition mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to course setup
-            </Link>
+            </Link> */}
             <div className="items-center justify-between flex w-full">
-              <div className="flex flex-col gap-y-2">
+              <ChapterCreation completionText={completionText} />
+              {/* <div className="flex flex-col gap-y-2">
                 <h1 className="text-2xl font-medium">Chapter creation</h1>
                 <span className="text-sm text-slate-700">
                   Complete all fields {completionText}
                 </span>
-              </div>
+              </div> */}
               <ChapterActions
                 disabled={!isComplete}
                 courseId={course.id}
@@ -106,7 +111,8 @@ const ChapterIdPage = async ({
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+        <ChapterForms chapter={chapter} course={course} />
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
           <div className="space-y-4">
             <div>
               <div className="flex items-center gap-x-2">
@@ -147,7 +153,7 @@ const ChapterIdPage = async ({
               chapterId={chapter.id}
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

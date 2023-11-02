@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BarChart, Compass, Layout, List, LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
+import { useLanguageContext } from "@/context/language-context";
 import { SidebarItem } from "./sidebar-item";
 
 interface ISidebarRoute {
@@ -25,6 +26,19 @@ const guestRoutes: ISidebarRoute[] = [
   },
 ];
 
+const guestRoutesID: ISidebarRoute[] = [
+  {
+    icon: Layout,
+    label: "Dashboard",
+    href: "/",
+  },
+  {
+    icon: Compass,
+    label: "Jelajah",
+    href: "/search",
+  },
+];
+
 const teacherRoutes: ISidebarRoute[] = [
   {
     icon: List,
@@ -38,12 +52,39 @@ const teacherRoutes: ISidebarRoute[] = [
   },
 ];
 
+const teacherRoutesID: ISidebarRoute[] = [
+  {
+    icon: List,
+    label: "Kursus",
+    href: "/teacher/courses",
+  },
+  {
+    icon: BarChart,
+    label: "Analitik",
+    href: "/teacher/analytics",
+  },
+];
+
 const SidebarRoutes = () => {
+  const [mounted, setMounted] = useState(false);
   const pathName = usePathname();
+  const { language } = useLanguageContext();
 
   const isTeacherPage = pathName?.includes("/teacher");
 
-  const routes = isTeacherPage ? teacherRoutes : guestRoutes;
+  const routes = isTeacherPage
+    ? language === "en"
+      ? teacherRoutes
+      : teacherRoutesID
+    : language === "en"
+    ? guestRoutes
+    : guestRoutesID;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="flex flex-col w-full">

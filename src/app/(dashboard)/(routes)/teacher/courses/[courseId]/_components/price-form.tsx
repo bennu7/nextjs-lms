@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   price: z.coerce.number().min(1, {
@@ -36,6 +37,7 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,14 +80,14 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Price
+        {language === "en" ? "Course Price" : "Harga Kursus"}
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit price</span>
+              <span>{language === "en" ? "Edit Price" : "Ubah Harga"}</span>
             </div>
           )}
         </Button>
@@ -97,7 +99,11 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
             !initialData.price && "text-slate-500 italic"
           )}
         >
-          {initialData.price ? formatPrice(initialData.price) : "No price"}
+          {initialData.price
+            ? formatPrice(initialData.price)
+            : language === "en"
+            ? "No price"
+            : "Tidak ada harga"}
         </p>
       ) : (
         <Form {...form}>
@@ -115,7 +121,11 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
                       type="number"
                       step="0.01"
                       disabled={isSubmitting}
-                      placeholder="set a price for your course"
+                      placeholder={
+                        language === "en"
+                          ? "set a price for your course"
+                          : "tetapkan harga untuk kursus anda"
+                      }
                       {...field}
                       value={field.value}
                     />
@@ -126,7 +136,7 @@ const PriceForm: React.FC<PriceFormProps> = ({ courseId, initialData }) => {
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Save
+                {language === "en" ? "Save" : "Simpan"}
               </Button>
             </div>
           </form>

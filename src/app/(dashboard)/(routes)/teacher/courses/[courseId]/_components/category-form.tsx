@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Combobox } from "@/components/ui/combobox";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   categoryId: z
@@ -47,6 +48,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [filled, setFilled] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,14 +93,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Category
+        {language === "en" ? "Course Category" : "Kategori Kursus"}
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit category</span>
+              <span>
+                {language === "en" ? "Edit category" : "Ubah kategori"}
+              </span>
             </div>
           )}
         </Button>
@@ -110,7 +114,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             !initialData.categoryId && "text-slate-500 italic"
           )}
         >
-          {selectedOption?.label || "No category"}
+          {selectedOption?.label || language === "en"
+            ? "No category"
+            : "Tidak ada kategori"}
         </p>
       ) : (
         <Form {...form}>
@@ -140,7 +146,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={!filled} type="submit">
-                Save
+                {language === "en" ? "Save" : "Simpan"}
               </Button>
             </div>
           </form>

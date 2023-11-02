@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { cn } from "@/lib/utils";
+import { useLanguageContext } from "@/context/language-context";
 import { Progress } from "./ui/progress";
 
 interface CourseProgressProps {
@@ -26,6 +27,14 @@ const CourseProgress: React.FC<CourseProgressProps> = ({
   variant,
   size,
 }) => {
+  const [mounted, setMounted] = useState(false);
+  const { language } = useLanguageContext();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
+
   return (
     <div>
       <Progress variant={variant} className="h-2" value={value} />
@@ -36,7 +45,7 @@ const CourseProgress: React.FC<CourseProgressProps> = ({
           sizeByvariant[size || "default"]
         )}
       >
-        {Math.round(value)}% Complete
+        {Math.round(value)}% {language === "en" ? "Complete" : "Selesai"}
       </p>
     </div>
   );

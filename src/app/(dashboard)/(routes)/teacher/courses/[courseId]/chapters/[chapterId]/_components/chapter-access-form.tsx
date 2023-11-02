@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   isFree: z.boolean().default(false),
@@ -39,6 +40,7 @@ const ChapterAccessForm: React.FC<ChapterAccessFormProps> = ({
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,14 +86,14 @@ const ChapterAccessForm: React.FC<ChapterAccessFormProps> = ({
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Chapter access settings
+        {language === "en" ? "Chapter access settings" : "Pengaturan akses bab"}
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit access</span>
+              <span>{language === "en" ? "Edit access" : "Ubah akses"}</span>
             </div>
           )}
         </Button>
@@ -104,9 +106,17 @@ const ChapterAccessForm: React.FC<ChapterAccessFormProps> = ({
           )}
         >
           {initialData.isFree ? (
-            <>this chapter is free for preview</>
+            <>
+              {language === "en"
+                ? "this chapter is free for preview"
+                : "bab ini gratis untuk pratinjau"}
+            </>
           ) : (
-            <>This chapter is not free.</>
+            <>
+              {language === "en"
+                ? "This chapter is not free"
+                : "Bab ini tidak gratis"}
+            </>
           )}
         </p>
       ) : (
@@ -129,8 +139,9 @@ const ChapterAccessForm: React.FC<ChapterAccessFormProps> = ({
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormDescription>
-                      Check this box if you want to make this chapter free for
-                      preview
+                      {language === "en"
+                        ? "Check this box if you want to make this chapter free for preview"
+                        : "Centang kotak ini jika Anda ingin membuat bab ini gratis untuk pratinjau"}
                     </FormDescription>
                   </div>
                   <FormMessage />
@@ -139,7 +150,7 @@ const ChapterAccessForm: React.FC<ChapterAccessFormProps> = ({
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Save
+                {language === "en" ? "Save" : "Simpan"}
               </Button>
             </div>
           </form>

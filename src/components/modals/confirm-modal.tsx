@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 
 import {
   AlertDialog,
@@ -11,6 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useLanguageContext } from "@/context/language-context";
 
 interface ConfirmModalProps {
   children: React.ReactNode;
@@ -18,20 +20,34 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ children, onConfirm }) => {
+  const [mounted, setMounted] = useState(false);
+  const { language } = useLanguageContext();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are yout sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {language === "en" ? "Are you sure?" : "Apakah anda yakin?"}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone.
+            {language === "en"
+              ? "This action cannot be undone."
+              : "Tindakan ini tidak dapat dibatalkan."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {language === "en" ? "Cancel" : "Batal"}
+          </AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} className="bg-red-600">
-            Continue
+            {language === "en" ? "Continue" : "Lanjutkan"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -35,6 +36,7 @@ const metadata: Metadata = {
 const CreatePage = () => {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -69,10 +71,15 @@ const CreatePage = () => {
   return (
     <div className="flex h-full max-w-5xl p-6 mx-auto md:items-center md:justify-center">
       <div className="">
-        <h1 className="text-2xl">Name Course</h1>
+        <h1 className="text-2xl">
+          {language === "en" ? "Name Course" : "Nama Kursus"}
+        </h1>
         <p className="text-sm text-slate-600">
-          What would you like to name your course? Don&apos;t worry, you can
-          change this later.
+          {/* What would you like to name your course? Don&apos;t worry, you can
+          change this later. */}
+          {language === "en"
+            ? "What would you like to name your course? Don't worry, you can change this later."
+            : "Apa yang ingin Anda namakan kursus Anda? Jangan khawatir, Anda dapat mengubahnya nanti."}
         </p>
         <Form {...form}>
           <form
@@ -84,17 +91,25 @@ const CreatePage = () => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Course title</FormLabel>
+                  <FormLabel>
+                    {language === "en" ? "Course title" : "Judul kursus"}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="w.g. 'Introduction to Computer Science'"
+                      placeholder={
+                        language === "en"
+                          ? "w.g. 'Introduction to Computer Science'"
+                          : "w.g. 'Pengantar Ilmu Komputer'"
+                      }
                       className="w-full"
                       disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormDescription>
-                    What will you teach in this course?
+                    {language === "en"
+                      ? "What will you teach in this course?"
+                      : "Apa yang akan Anda ajarkan dalam kursus ini?"}
                   </FormDescription>
                 </FormItem>
               )}
@@ -102,11 +117,11 @@ const CreatePage = () => {
             <div className="flex items-center gap-x-2">
               <Link href={"/"}>
                 <Button type="button" variant={"ghost"}>
-                  Cancel
+                  {language === "en" ? "Cancel" : "Batal"}
                 </Button>
               </Link>
               <Button type="submit" disabled={!isValid || isSubmitting}>
-                Continue
+                {language === "en" ? "Create" : "Buat"}
               </Button>
             </div>
           </form>

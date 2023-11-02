@@ -48,6 +48,7 @@ export const getChapter = async ({
     let muxData = null;
     let attachments: Attachment[] = [];
     let nextChapter: Chapter | null = null;
+    let doneAllChapterVideos = false;
 
     if (purchase) {
       attachments = await db.attachment.findMany({
@@ -76,6 +77,19 @@ export const getChapter = async ({
           position: "asc",
         },
       });
+
+      const doneWatchedAllVideo = await db.userProgress.count({
+        where: {
+          userId,
+          isCompleted: false,
+        },
+      });
+
+      if (doneWatchedAllVideo === 0) {
+        doneAllChapterVideos = true;
+      } else {
+        doneAllChapterVideos = false;
+      }
     }
 
     const userProgress = await db.userProgress.findUnique({
@@ -95,6 +109,7 @@ export const getChapter = async ({
       nextChapter,
       userProgress,
       purchase,
+      doneAllChapterVideos,
     };
   } catch (err: any) {
     console.log("[ACTIONS GET CHAPTERS ERROR]", err);
@@ -106,6 +121,7 @@ export const getChapter = async ({
       nextChapter: null,
       userProgress: null,
       purchase: null,
+      doneAllChapterVideos: false,
     };
   }
 };

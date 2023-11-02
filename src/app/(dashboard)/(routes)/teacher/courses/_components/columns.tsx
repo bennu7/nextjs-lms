@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useLanguageContext } from "@/context/language-context";
 
 export const columns: ColumnDef<
   Course & {
@@ -23,6 +24,7 @@ export const columns: ColumnDef<
   {
     accessorKey: "title",
     header: ({ column }) => {
+      const { language } = useLanguageContext();
       return (
         <Button
           size={"sm"}
@@ -30,7 +32,7 @@ export const columns: ColumnDef<
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
+          {language === "en" ? "Title" : "Judul"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -43,6 +45,7 @@ export const columns: ColumnDef<
   {
     accessorKey: "price",
     header: ({ column }) => {
+      const { language } = useLanguageContext();
       return (
         <Button
           size={"sm"}
@@ -50,7 +53,7 @@ export const columns: ColumnDef<
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          {language === "en" ? "Price" : "Harga"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -68,6 +71,7 @@ export const columns: ColumnDef<
   {
     accessorKey: "isPublished",
     header: ({ column }) => {
+      const { language } = useLanguageContext();
       return (
         <Button
           size={"sm"}
@@ -75,7 +79,8 @@ export const columns: ColumnDef<
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Published
+          {/* Published */}
+          {language === "en" ? "Published" : "Diterbitkan"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );

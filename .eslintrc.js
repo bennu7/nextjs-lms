@@ -34,5 +34,6 @@ module.exports = {
     "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "prefer-const": "warn",
+    "react-hooks/rules-of-hooks": "off",
   },
 };

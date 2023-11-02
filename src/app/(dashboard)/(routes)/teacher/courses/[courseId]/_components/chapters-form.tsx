@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { useLanguageContext } from "@/context/language-context";
 
 import { ChaptersList } from "./chapterts-list";
 
@@ -44,6 +45,9 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const getLastPathName = pathname.split("/").slice(-1)[0];
+  const { language } = useLanguageContext();
+  console.log("🚀 ~ file: chapters-form.tsx:49 ~ language:", language);
+  console.log(!initialData.chapters.length);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -132,14 +136,16 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
         </div>
       )}
       <div className="flex items-center justify-between font-medium">
-        Course Chapters
+        {language === "en" ? "Course Chapters" : "Bab Kursus"}
         <Button variant={"ghost"} onClick={toggleCreating}>
           {isCreating ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <PlusCircle className="w-4 h-4 mr-2" />
-              <span>Add a chapter</span>
+              <span>
+                {language === "en" ? "Add a chapter" : "Tambahkan bab"}
+              </span>
             </div>
           )}
         </Button>
@@ -158,7 +164,11 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="e.g. 'This chapter is about Introduction to the course...'"
+                      placeholder={
+                        language === "en"
+                          ? "This chapter is about Introduction to the course...'"
+                          : "Bab ini tentang Pengenalan kursus...'"
+                      }
                       {...field}
                       value={field.value}
                     />
@@ -169,7 +179,7 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Create
+                {language === "en" ? "Create" : "Buat"}
               </Button>
             </div>
           </form>
@@ -182,7 +192,9 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
             !initialData.chapters.length && "text-slate-500 italic"
           )}
         >
-          {!initialData.chapters.length && "No Chapters"}
+          {!initialData.chapters.length && (
+            <span>{language === "en" ? "No chapters" : "Tidak ada bab"}</span>
+          )}
           <ChaptersList
             onEdit={onEdit}
             onReorder={onReorder}
@@ -192,7 +204,9 @@ const ChaptersForm: React.FC<ChaptersFormProps> = ({
       )}
       {!isCreating && (
         <p className="text-xs text-muted-foreground mt-4">
-          Drag and drop to reorder the chapters
+          {language === "en"
+            ? "Drag and drop to reorder the chapters"
+            : "Seret dan lepas untuk mengurutkan bab"}
         </p>
       )}
     </div>

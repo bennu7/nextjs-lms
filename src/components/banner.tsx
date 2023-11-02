@@ -5,6 +5,7 @@ import { AlertTriangle, CheckCircleIcon } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
+import { useLanguageContext } from "@/context/language-context";
 
 const bannerVariants = cva(
   "border text-center p-4 text-sm flex items-center w-full",
@@ -22,7 +23,8 @@ const bannerVariants = cva(
 );
 
 interface BannerProps extends VariantProps<typeof bannerVariants> {
-  label: string;
+  labelEn: string;
+  labelId: string;
 }
 
 const iconMap = {
@@ -30,8 +32,9 @@ const iconMap = {
   success: CheckCircleIcon,
 };
 
-const Banner: React.FC<BannerProps> = ({ label, variant }) => {
+const Banner: React.FC<BannerProps> = ({ labelEn, labelId, variant }) => {
   const [mounted, setMounted] = useState(false);
+  const { language } = useLanguageContext();
 
   const Icon = iconMap[variant || "warning"];
 
@@ -43,7 +46,7 @@ const Banner: React.FC<BannerProps> = ({ label, variant }) => {
   return (
     <div className={cn(bannerVariants({ variant }))}>
       <Icon className="mr-2 h-4 w-4" />
-      <span>{label}</span>
+      <span>{language === "en" ? labelEn : labelId}</span>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
+import { useLanguageContext } from "@/context/language-context";
 
 interface CourseProgressButonProps {
   chapterId: string;
@@ -21,9 +22,11 @@ const CourseProgressButon: React.FC<CourseProgressButonProps> = ({
   nextChapterId,
   isCompleted,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
+  const { language } = useLanguageContext();
 
   const onClick = async () => {
     try {
@@ -58,6 +61,11 @@ const CourseProgressButon: React.FC<CourseProgressButonProps> = ({
 
   const Icon = isCompleted ? XCircle : CheckCircle;
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
+
   return (
     <Button
       onClick={onClick}
@@ -66,7 +74,14 @@ const CourseProgressButon: React.FC<CourseProgressButonProps> = ({
       variant={isCompleted ? "outline" : "success"}
       className="w-full md:w-auto"
     >
-      {isCompleted ? "Not Completed" : "Mark as complete"}
+      {/* {isCompleted ? "Not Completed" : "Mark as complete"} */}
+      {isCompleted
+        ? language === "en"
+          ? "Not Completed"
+          : "Belum selesai"
+        : language === "en"
+        ? "Mark as complete"
+        : "Tandai selesai"}
       <Icon className="h-4 w-4 ml-2" />
     </Button>
   );

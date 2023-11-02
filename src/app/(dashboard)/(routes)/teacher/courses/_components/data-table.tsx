@@ -25,8 +25,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-
 import { Button } from "@/components/ui/button";
+import { useLanguageContext } from "@/context/language-context";
 
 export const metadata: Metadata = {
   title: "Courses",
@@ -46,6 +46,7 @@ export function DataTable<TData, TValue>({
     []
   );
   const [mounted, setMounted] = React.useState(false);
+  const { language } = useLanguageContext();
 
   const table = useReactTable({
     data,
@@ -73,7 +74,9 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4 justify-between">
         <Input
-          placeholder="Searching titles..."
+          placeholder={
+            language === "en" ? "Searching titles..." : "Cari judul..."
+          }
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
@@ -83,7 +86,7 @@ export function DataTable<TData, TValue>({
         <Link href="/teacher/create">
           <Button>
             <PlusCircle className="h-4 w-4 mr-2" />
-            New Course
+            {language === "en" ? "New Course" : "Kursus Baru"}
           </Button>
         </Link>
       </div>
@@ -130,7 +133,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {language === "en" ? "No results." : "Tidak ada hasil."}
                 </TableCell>
               </TableRow>
             )}
@@ -144,7 +147,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          {language === "en" ? "Previous" : "Sebelumnya"}
         </Button>
         <Button
           variant="outline"
@@ -152,7 +155,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          {language === "en" ? "Next" : "Selanjutnya"}
         </Button>
       </div>
     </div>

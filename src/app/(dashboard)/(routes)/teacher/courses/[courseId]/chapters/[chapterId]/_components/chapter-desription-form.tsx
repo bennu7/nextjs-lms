@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Editor } from "@/components/editor";
 import { Preview } from "@/components/preview";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   desc: z
@@ -42,6 +43,7 @@ const ChapterDescriptionForm: React.FC<ChapterDescriptionFormProps> = ({
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,14 +89,16 @@ const ChapterDescriptionForm: React.FC<ChapterDescriptionFormProps> = ({
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Chapter Description
+        {language === "en" ? "Chapter Description" : "Deskripsi Bab"}
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit description</span>
+              <span>
+                {language === "en" ? "Edit description" : "Ubah Deskripsi"}
+              </span>
             </div>
           )}
         </Button>
@@ -107,7 +111,15 @@ const ChapterDescriptionForm: React.FC<ChapterDescriptionFormProps> = ({
           )}
         >
           {/* {initialData.desc || "No description"} */}
-          <Preview value={initialData.desc || "No Description"} />
+          <Preview
+            value={
+              !initialData.desc
+                ? language === "en"
+                  ? "No Description"
+                  : "Tidak ada deskripsi"
+                : initialData.desc
+            }
+          />
         </div>
       ) : (
         <Form {...form}>
@@ -129,7 +141,7 @@ const ChapterDescriptionForm: React.FC<ChapterDescriptionFormProps> = ({
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Save
+                {language === "en" ? "Save" : "Simpan"}
               </Button>
             </div>
           </form>

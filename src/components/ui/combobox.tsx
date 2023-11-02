@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useLanguageContext } from "@/context/language-context";
 
 interface ComboboxProps {
   options: { label: string; value: string }[];
@@ -29,6 +30,13 @@ export const Combobox: React.FC<ComboboxProps> = ({
   onChange,
 }) => {
   const [open, setOpen] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+  const { language } = useLanguageContext();
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,14 +49,20 @@ export const Combobox: React.FC<ComboboxProps> = ({
         >
           {value
             ? options.find((option) => option.value === value)?.label
-            : "Select option..."}
+            : language === "en"
+            ? "Select option..."
+            : "Pilih opsi..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Search option..." />
-          <CommandEmpty>No option found.</CommandEmpty>
+          <CommandEmpty>
+            {language === "en"
+              ? "No option found."
+              : "Tidak ada opsi ditemukan."}
+          </CommandEmpty>
           <CommandGroup>
             {options.map((option) => (
               <CommandItem

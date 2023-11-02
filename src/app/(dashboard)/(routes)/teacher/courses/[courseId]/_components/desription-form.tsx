@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   description: z
@@ -39,6 +40,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,14 +83,16 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Description
+        {language === "en" ? "Course Description" : "Deskripsi Kursus"}
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit description</span>
+              <span>
+                {language === "en" ? "Edit description" : "Ubah deskripsi"}
+              </span>
             </div>
           )}
         </Button>
@@ -100,7 +104,11 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
             !initialData.description && "text-slate-500 italic"
           )}
         >
-          {initialData.description || "No description"}
+          {!initialData.description
+            ? language === "en"
+              ? "No description"
+              : "Tidak ada deskripsi"
+            : initialData.description}
         </p>
       ) : (
         <Form {...form}>
@@ -116,7 +124,11 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
                   <FormControl>
                     <Textarea
                       disabled={isSubmitting}
-                      placeholder="e.g. 'This course is about...'"
+                      placeholder={
+                        language === "en"
+                          ? "e.g. 'This course is about...'"
+                          : "e.g. 'Kursus ini tentang...'"
+                      }
                       {...field}
                       value={field.value}
                     />
@@ -127,7 +139,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Save
+                {language === "en" ? "Save" : "Simpan"}
               </Button>
             </div>
           </form>

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").trim(),
@@ -36,6 +37,7 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,14 +83,14 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Chapter Title
+        {language === "en" ? "Chapter Title" : "Judul Bab"}
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit title</span>
+              <span>{language === "en" ? "Edit title" : "Ubah Judul"}</span>
             </div>
           )}
         </Button>
@@ -109,7 +111,11 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="e.g. 'Introduction to the chapter'"
+                      placeholder={
+                        language === "en"
+                          ? "e.g. 'Introduction to the chapter'"
+                          : "contoh: 'Pengenalan bab'"
+                      }
                       {...field}
                       value={field.value}
                     />
@@ -120,7 +126,7 @@ const ChapterTitleForm: React.FC<ChapterTitleFormProps> = ({
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Save
+                {language === "en" ? "Save" : "Simpan"}
               </Button>
             </div>
           </form>

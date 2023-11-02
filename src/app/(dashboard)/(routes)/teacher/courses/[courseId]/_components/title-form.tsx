@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLanguageContext } from "@/context/language-context";
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").trim(),
@@ -32,6 +33,7 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,14 +79,14 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
   return (
     <div className="p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Title
+        {language === "en" ? "Course Title" : "Judul Kursus"}
         <Button variant={"ghost"} onClick={toggleEdit}>
           {isEditing ? (
-            <span>Cancel</span>
+            <span>{language === "en" ? "Cancel" : "Batal"}</span>
           ) : (
             <div className="flex flex-row">
               <Pencil className="w-4 h-4 mr-2" />
-              <span>Edit title</span>
+              <span>{language === "en" ? "Edit title" : "Ubah judul"}</span>
             </div>
           )}
         </Button>
@@ -116,7 +118,7 @@ const TitleForm: React.FC<TitleFormProps> = ({ courseId, initialData }) => {
             />
             <div className="flex items-center gap-x-2">
               <Button disabled={isSubmitting || !isValid} type="submit">
-                Save
+                {language === "en" ? "Save" : "Simpan"}
               </Button>
             </div>
           </form>

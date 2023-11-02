@@ -8,6 +8,8 @@ import { Pencil, PlusCircle, Video } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import MuxPlayer from "@mux/mux-player-react";
+import ReactPlayer from "react-player";
+import { useLanguageContext } from "@/context/language-context";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
@@ -29,6 +31,7 @@ const ChapterVideoForm: React.FC<ChapterVideoFormProps> = ({
   const [mount, setMount] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const { language } = useLanguageContext();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -65,19 +68,19 @@ const ChapterVideoForm: React.FC<ChapterVideoFormProps> = ({
   return (
     <div className="flex flex-col p-4 mt-6 border rounded-md bg-slate-100">
       <div className="flex items-center justify-between font-medium">
-        Course Video
+        {language === "en" ? "Course Video" : "Video Kursus"}
         <Button variant={"ghost"} onClick={toggleEdit}>
-          {isEditing && <span>Cancel</span>}
+          {isEditing && <span>{language === "en" ? "Cancel" : "Batal"}</span>}
           {!isEditing &&
             (!initialData.videoUrl ? (
               <>
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Add a video
+                {language === "en" ? "Add a video" : "Tambahkan video"}
               </>
             ) : (
               <>
                 <Pencil className="h-4 w-4 mr-2" />
-                Edit video
+                {language === "en" ? "Edit video" : "Ubah video"}
               </>
             ))}
         </Button>
@@ -88,10 +91,24 @@ const ChapterVideoForm: React.FC<ChapterVideoFormProps> = ({
             <Video className="h-10 w-10 text-slate-500" />
           </div>
         ) : (
-          <div className="relative aspect-video mt-2">
-            <MuxPlayer
+          <div className="relative aspect-video mt-2 rounded-xl">
+            {/* <MuxPlayer
               playbackId={initialData.muxData?.playbackId || ""}
               // metadata={}
+            /> */}
+            <ReactPlayer
+              url={initialData.videoUrl}
+              controls
+              config={{
+                file: {
+                  attributes: {
+                    controlsList: "nodownload",
+                    disablePictureInPicture: true,
+                  },
+                },
+              }}
+              width="100%"
+              height="100%"
             />
           </div>
         ))}
@@ -106,16 +123,18 @@ const ChapterVideoForm: React.FC<ChapterVideoFormProps> = ({
             }}
           />
           <div className="text-xs text-muted-foreground mt-4">
-            Upload this chapter&apos;s video
+            {language === "en"
+              ? "Upload this chapter's video"
+              : "Unggah video bab ini"}
           </div>
         </div>
       )}
-      {initialData.videoUrl && !isEditing && (
+      {/* {initialData.videoUrl && !isEditing && (
         <div className="text-xs text-muted-foreground mt-2">
           Videos can take a few minutes to process. Refresh to the page if video
           does not appear.
         </div>
-      )}
+      )} */}
     </div>
   );
 };
